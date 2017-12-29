@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secret Santa Generator</title>
+</head>
+<body>
+
+<h3>Enter name separated by space for each person in immediate family, with comma separating families.</h3>
+<input type="text" id="myText" value="Daniel Hilson Bevone, Alex Dorothy, David Stephen, Andrew Catherine, Jayden Damon, Sammy" size="75">
+
+<p>Click button to generate ordering. There are </p>
+
+<button onclick="myFunction()">Generate Secret Santa Ordering</button>
+
+<p id="demo"></p>
+
+<script>
+function shuffle(array) {
+  var m = array.length, t, i;
+
+  // While there remain elements to shuffle…
+  while (m) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * m--);
+
+    // And swap it with the current element.
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+
+  return array;
+}
+
+
+function myFunction() 
+{
+    var x = document.getElementById("myText").value;
+    var family = x.split(',');
+    var setAry = [];
+    var numPeople = 0;
+    var condition = 1;
+    
+    var testCond = 0;
+    for (var i = 0; i < family.length; i++)
+    {
+        var people = (family[i].trim()).split(' ');
+        setAry.push(people);
+        numPeople = numPeople + people.length;
+    }
+
+    for (var i = 0; i < family.length; i++)
+    {
+        setAry[i] = shuffle(setAry[i]);
+    }
+
+    for (var i = 0; i < family.length; i++)
+    {
+        for (var j = 1; j < family.length; j++)
+        {
+            if (setAry[j - 1].length < setAry[j].length)
+            {
+                temp = setAry[j - 1];
+                setAry[j - 1] = setAry[j];
+                setAry[j] = temp;
+            }
+            if (setAry[j - 1].length == setAry[j].length)
+            {
+                var randNum = Math.floor(Math.random()*2);
+                if (randNum == 0)
+                {
+                    temp = setAry[j - 1];
+                    setAry[j - 1] = setAry[j];
+                    setAry[j] = temp;
+                }
+            }
+        }
+    }
+
+    var peopleOrder = [];
+    var index = 0;
+    var row = 0;
+    var maximum = Math.max(family.length, setAry[0].length);
+    while (row < maximum)
+    {
+        var temprow = row;
+        var tempcol = 0;
+        while (temprow >= 0)
+        {
+            if (temprow < family.length)
+            {
+                if (tempcol < setAry[temprow].length)
+                {
+                    peopleOrder[index]= setAry[temprow][tempcol];
+                    index = index + 1;
+                }
+            }
+            temprow = temprow - 1;
+            tempcol = tempcol + 1;
+        }
+        row = row + 1;
+    }
+
+    var col = 1;
+    while (col < maximum)
+    {
+        var temprow = maximum - 1;;
+        var tempcol = col;
+        while (tempcol < maximum)
+        {
+            if (temprow < family.length)
+            {
+                if (tempcol < setAry[temprow].length)
+                {
+                    peopleOrder[index] = setAry[temprow][tempcol];
+                    index = index + 1;
+                }
+            }
+            temprow = temprow - 1;
+            tempcol = tempcol + 1;
+        }
+        col = col + 1;
+    }
+
+    var start = Math.floor(Math.random() * peopleOrder.length)
+    var stringOrder = ""
+    var rander = Math.floor(Math.random()*2);
+    if (rander == 0)
+    {
+        for (var i = 0; i < peopleOrder.length; i++)  
+        {
+            stringOrder = stringOrder + peopleOrder[(start + i)%peopleOrder.length] + " -> ";
+        }
+        stringOrder = stringOrder + peopleOrder[start];
+        document.getElementById("demo").innerHTML = stringOrder;
+    }
+    else
+    {
+        for (var i = peopleOrder.length - 1; i >= 0; i--)  
+        {
+            stringOrder = stringOrder + peopleOrder[(start + i)%peopleOrder.length] + " -> ";
+        }
+        stringOrder = stringOrder + peopleOrder[(start + peopleOrder.length - 1)%peopleOrder.length];
+        document.getElementById("demo").innerHTML = stringOrder;
+    }
+}
+</script>
+
+</body>
+</html>
